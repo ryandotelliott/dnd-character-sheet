@@ -1,101 +1,214 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { CharacterData } from '@/types/character';
+import { Save } from 'lucide-react';
+
+// Import components
+import { CharacterHeader } from '@/components/character-sheet/CharacterHeader';
+import { AbilityScores } from '@/components/character-sheet/AbilityScores';
+import { CombatStats } from '@/components/character-sheet/CombatStats';
+import { DeathSaves } from '@/components/character-sheet/DeathSaves';
+import { SuperiorityDice } from '@/components/character-sheet/SuperiorityDice';
+import { Proficiencies } from '@/components/character-sheet/Proficiencies';
+import { Features } from '@/components/character-sheet/Features';
+import { Inventory } from '@/components/character-sheet/Inventory';
+import { CampaignNotes } from '@/components/character-sheet/CampaignNotes';
+import { GeneralNotes } from '@/components/character-sheet/GeneralNotes';
+
+export default function CharacterSheet() {
+  const [character, setCharacter] = useState<CharacterData>({
+    name: 'Tharion Nightblade',
+    level: 0,
+    characterClass: '',
+    race: '',
+    background: '',
+    alignment: '',
+    experiencePoints: 0,
+
+    // Ability scores
+    abilities: {
+      strength: 0,
+      dexterity: 0,
+      constitution: 0,
+      intelligence: 0,
+      wisdom: 0,
+      charisma: 0,
+    },
+
+    // Combat stats
+    armorClass: 0,
+    initiative: 0,
+    speed: 0,
+    hitPointsMax: 0,
+    hitPointsCurrent: 0,
+    hitDiceTotal: '0d0',
+    hitDiceRemaining: '0d0',
+
+    // Death saves
+    deathSaves: {
+      successes: 0,
+      failures: 0,
+    },
+
+    // Class features
+    superiorityDice: {
+      total: 0,
+      remaining: 0,
+      diceType: '',
+    },
+
+    // Equipment and inventory
+    inventory: [],
+
+    // Proficiencies
+    proficiencies: [],
+
+    // Features
+    features: [],
+
+    // General notes
+    generalNotes: '',
+
+    // Campaign notes
+    campaign: {
+      landmarks: [],
+      events: [],
+      people: [],
+      objectives: [],
+    },
+  });
+
+  const updateCharacter = (section: keyof CharacterData, field: string | null, value: any) => {
+    setCharacter((prev) => {
+      if (typeof field === 'string' && field !== null) {
+        // Handle nested objects with proper typing
+        if (section === 'abilities') {
+          return {
+            ...prev,
+            abilities: {
+              ...prev.abilities,
+              [field]: value,
+            },
+          };
+        } else if (section === 'deathSaves') {
+          return {
+            ...prev,
+            deathSaves: {
+              ...prev.deathSaves,
+              [field]: value,
+            },
+          };
+        } else if (section === 'superiorityDice') {
+          return {
+            ...prev,
+            superiorityDice: {
+              ...prev.superiorityDice,
+              [field]: value,
+            },
+          };
+        } else if (section === 'campaign') {
+          return {
+            ...prev,
+            campaign: {
+              ...prev.campaign,
+              [field]: value,
+            },
+          };
+        } else {
+          // For top-level properties
+          return {
+            ...prev,
+            [section]: value,
+          };
+        }
+      } else {
+        // For direct updates to top-level properties
+        return {
+          ...prev,
+          [section]: value,
+        };
+      }
+    });
+  };
+
+  const updateAbility = (ability: string, value: string | number) => {
+    setCharacter((prev) => ({
+      ...prev,
+      abilities: {
+        ...prev.abilities,
+        [ability]: Number(value),
+      },
+    }));
+  };
+
+  const getAbilityModifier = (score: number) => {
+    return Math.floor((score - 10) / 2);
+  };
+
+  const formatModifier = (mod: number) => {
+    return mod >= 0 ? `+${mod}` : `${mod}`;
+  };
+
+  const loadCharacter = () => {
+    const savedCharacter = localStorage.getItem('character');
+    if (savedCharacter) {
+      setCharacter(JSON.parse(savedCharacter));
+    }
+  };
+
+  useEffect(() => {
+    loadCharacter();
+  }, []);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-gray-100 p-4">
+      <div className="mx-auto max-w-7xl overflow-hidden rounded-lg bg-white shadow-lg">
+        <div className="bg-dnd-accent text-dnd-accent-foreground p-4">
+          <h1 className="text-center text-3xl font-bold">D&D CHARACTER SHEET</h1>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Character Header */}
+        <CharacterHeader character={character} updateCharacter={updateCharacter} />
+
+        <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-12">
+          {/* Left Column - Abilities and Combat */}
+          <div className="space-y-4 md:col-span-3">
+            <AbilityScores character={character} updateAbility={updateAbility} />
+            <CombatStats character={character} updateCharacter={updateCharacter} />
+            <DeathSaves character={character} updateCharacter={updateCharacter} />
+            <SuperiorityDice character={character} updateCharacter={updateCharacter} />
+          </div>
+
+          {/* Middle Column - Proficiencies, Features, and General Notes */}
+          <div className="space-y-4 md:col-span-5">
+            <Proficiencies character={character} updateCharacter={updateCharacter} />
+            <Features character={character} updateCharacter={updateCharacter} />
+            <GeneralNotes character={character} updateCharacter={updateCharacter} />
+          </div>
+
+          {/* Right Column - Inventory and Campaign Notes */}
+          <div className="space-y-4 md:col-span-4">
+            <Inventory character={character} updateCharacter={updateCharacter} />
+            <CampaignNotes character={character} updateCharacter={updateCharacter} />
+          </div>
+        </div>
+
+        {/* Footer with save button */}
+        <div className="flex justify-end border-t bg-gray-50 p-4">
+          <Button
+            className="bg-dnd-accent flex cursor-pointer items-center gap-2"
+            onClick={() => {
+              console.log(character);
+              localStorage.setItem('character', JSON.stringify(character));
+            }}
+          >
+            <Save size={16} />
+            Save Character
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
