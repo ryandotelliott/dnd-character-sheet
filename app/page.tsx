@@ -185,18 +185,50 @@ export default function CharacterSheet() {
     }));
   };
 
-  const getAbilityModifier = (score: number) => {
-    return Math.floor((score - 10) / 2);
-  };
-
-  const formatModifier = (mod: number) => {
-    return mod >= 0 ? `+${mod}` : `${mod}`;
-  };
-
   const loadCharacter = () => {
     const savedCharacter = localStorage.getItem('character');
     if (savedCharacter) {
-      setCharacter(JSON.parse(savedCharacter));
+      try {
+        // Merge the saved character with the default state to ensure new fields exist
+        const parsedCharacter = JSON.parse(savedCharacter);
+        setCharacter((prevChar) => ({
+          ...prevChar, // Start with default state
+          ...parsedCharacter, // Override with saved values
+          // Ensure nested objects are properly merged and not replaced
+          abilityScores: {
+            ...prevChar.abilityScores,
+            ...(parsedCharacter.abilityScores || {}),
+          },
+          savingThrows: {
+            ...prevChar.savingThrows,
+            ...(parsedCharacter.savingThrows || {}),
+          },
+          skills: {
+            ...prevChar.skills,
+            ...(parsedCharacter.skills || {}),
+          },
+          deathSaves: {
+            ...prevChar.deathSaves,
+            ...(parsedCharacter.deathSaves || {}),
+          },
+          superiorityDice: {
+            ...prevChar.superiorityDice,
+            ...(parsedCharacter.superiorityDice || {}),
+          },
+          campaign: {
+            ...prevChar.campaign,
+            ...(parsedCharacter.campaign || {}),
+          },
+          // Ensure arrays exist
+          inventory: parsedCharacter.inventory || [],
+          proficiencies: parsedCharacter.proficiencies || [],
+          features: parsedCharacter.features || [],
+          abilities: parsedCharacter.abilities || [],
+        }));
+      } catch (error) {
+        console.error('Error parsing saved character:', error);
+        // If there's an error, just use the default state
+      }
     }
   };
 
