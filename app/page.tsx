@@ -16,6 +16,10 @@ import { Features } from '@/components/character-sheet/Features';
 import { Inventory } from '@/components/character-sheet/Inventory';
 import { CampaignNotes } from '@/components/character-sheet/CampaignNotes';
 import { GeneralNotes } from '@/components/character-sheet/GeneralNotes';
+import { ProficiencyBonus } from '@/components/character-sheet/ProficiencyBonus';
+import { SavingThrows } from '@/components/character-sheet/SavingThrows';
+import { Skills } from '@/components/character-sheet/Skills';
+import { Abilities } from '@/components/character-sheet/Abilities';
 
 export default function CharacterSheet() {
   const [character, setCharacter] = useState<CharacterData>({
@@ -28,13 +32,48 @@ export default function CharacterSheet() {
     experiencePoints: 0,
 
     // Ability scores
-    abilities: {
+    abilityScores: {
       strength: 0,
       dexterity: 0,
       constitution: 0,
       intelligence: 0,
       wisdom: 0,
       charisma: 0,
+    },
+
+    // Proficiency bonus
+    proficiencyBonus: 2,
+
+    // Saving throws
+    savingThrows: {
+      strength: false,
+      dexterity: false,
+      constitution: false,
+      intelligence: false,
+      wisdom: false,
+      charisma: false,
+    },
+
+    // Skills
+    skills: {
+      acrobatics: { proficient: false, expertise: false, ability: 'dexterity' },
+      animalHandling: { proficient: false, expertise: false, ability: 'wisdom' },
+      arcana: { proficient: false, expertise: false, ability: 'intelligence' },
+      athletics: { proficient: false, expertise: false, ability: 'strength' },
+      deception: { proficient: false, expertise: false, ability: 'charisma' },
+      history: { proficient: false, expertise: false, ability: 'intelligence' },
+      insight: { proficient: false, expertise: false, ability: 'wisdom' },
+      intimidation: { proficient: false, expertise: false, ability: 'charisma' },
+      investigation: { proficient: false, expertise: false, ability: 'intelligence' },
+      medicine: { proficient: false, expertise: false, ability: 'wisdom' },
+      nature: { proficient: false, expertise: false, ability: 'intelligence' },
+      perception: { proficient: false, expertise: false, ability: 'wisdom' },
+      performance: { proficient: false, expertise: false, ability: 'charisma' },
+      persuasion: { proficient: false, expertise: false, ability: 'charisma' },
+      religion: { proficient: false, expertise: false, ability: 'intelligence' },
+      sleightOfHand: { proficient: false, expertise: false, ability: 'dexterity' },
+      stealth: { proficient: false, expertise: false, ability: 'dexterity' },
+      survival: { proficient: false, expertise: false, ability: 'wisdom' },
     },
 
     // Combat stats
@@ -68,6 +107,9 @@ export default function CharacterSheet() {
     // Features
     features: [],
 
+    // Abilities
+    abilities: [],
+
     // General notes
     generalNotes: '',
 
@@ -84,11 +126,11 @@ export default function CharacterSheet() {
     setCharacter((prev) => {
       if (typeof field === 'string' && field !== null) {
         // Handle nested objects with proper typing
-        if (section === 'abilities') {
+        if (section === 'abilityScores') {
           return {
             ...prev,
-            abilities: {
-              ...prev.abilities,
+            abilityScores: {
+              ...prev.abilityScores,
               [field]: value,
             },
           };
@@ -136,8 +178,8 @@ export default function CharacterSheet() {
   const updateAbility = (ability: string, value: string | number) => {
     setCharacter((prev) => ({
       ...prev,
-      abilities: {
-        ...prev.abilities,
+      abilityScores: {
+        ...prev.abilityScores,
         [ability]: Number(value),
       },
     }));
@@ -176,22 +218,26 @@ export default function CharacterSheet() {
           {/* Left Column - Abilities and Combat */}
           <div className="space-y-4 md:col-span-3">
             <AbilityScores character={character} updateAbility={updateAbility} />
+            <ProficiencyBonus character={character} updateCharacter={updateCharacter} />
+            <SavingThrows character={character} updateCharacter={updateCharacter} />
             <CombatStats character={character} updateCharacter={updateCharacter} />
             <DeathSaves character={character} updateCharacter={updateCharacter} />
             <SuperiorityDice character={character} updateCharacter={updateCharacter} />
           </div>
 
-          {/* Middle Column - Proficiencies, Features, and General Notes */}
+          {/* Middle Column - Skills, Proficiencies, Features, and General Notes */}
           <div className="space-y-4 md:col-span-5">
+            <Skills character={character} updateCharacter={updateCharacter} />
             <Proficiencies character={character} updateCharacter={updateCharacter} />
             <Features character={character} updateCharacter={updateCharacter} />
-            <GeneralNotes character={character} updateCharacter={updateCharacter} />
+            <Abilities character={character} updateCharacter={updateCharacter} />
           </div>
 
           {/* Right Column - Inventory and Campaign Notes */}
           <div className="space-y-4 md:col-span-4">
             <Inventory character={character} updateCharacter={updateCharacter} />
             <CampaignNotes character={character} updateCharacter={updateCharacter} />
+            <GeneralNotes character={character} updateCharacter={updateCharacter} />
           </div>
         </div>
 

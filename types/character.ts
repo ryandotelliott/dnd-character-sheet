@@ -7,7 +7,7 @@ export type CharacterData = {
   alignment: string;
   experiencePoints: number;
 
-  abilities: {
+  abilityScores: {
     [key: string]: number;
     strength: number;
     dexterity: number;
@@ -15,6 +15,44 @@ export type CharacterData = {
     intelligence: number;
     wisdom: number;
     charisma: number;
+  };
+
+  proficiencyBonus: number;
+
+  savingThrows: {
+    [key: string]: boolean;
+    strength: boolean;
+    dexterity: boolean;
+    constitution: boolean;
+    intelligence: boolean;
+    wisdom: boolean;
+    charisma: boolean;
+  };
+
+  skills: {
+    [key: string]: {
+      proficient: boolean;
+      expertise: boolean;
+      ability: string;
+    };
+    acrobatics: { proficient: boolean; expertise: boolean; ability: string };
+    animalHandling: { proficient: boolean; expertise: boolean; ability: string };
+    arcana: { proficient: boolean; expertise: boolean; ability: string };
+    athletics: { proficient: boolean; expertise: boolean; ability: string };
+    deception: { proficient: boolean; expertise: boolean; ability: string };
+    history: { proficient: boolean; expertise: boolean; ability: string };
+    insight: { proficient: boolean; expertise: boolean; ability: string };
+    intimidation: { proficient: boolean; expertise: boolean; ability: string };
+    investigation: { proficient: boolean; expertise: boolean; ability: string };
+    medicine: { proficient: boolean; expertise: boolean; ability: string };
+    nature: { proficient: boolean; expertise: boolean; ability: string };
+    perception: { proficient: boolean; expertise: boolean; ability: string };
+    performance: { proficient: boolean; expertise: boolean; ability: string };
+    persuasion: { proficient: boolean; expertise: boolean; ability: string };
+    religion: { proficient: boolean; expertise: boolean; ability: string };
+    sleightOfHand: { proficient: boolean; expertise: boolean; ability: string };
+    stealth: { proficient: boolean; expertise: boolean; ability: string };
+    survival: { proficient: boolean; expertise: boolean; ability: string };
   };
 
   armorClass: number;
@@ -42,6 +80,7 @@ export type CharacterData = {
   }>;
   proficiencies: string[];
   features: string[];
+  abilities: string[];
   generalNotes: string; // Added general notes field
 
   campaign: {

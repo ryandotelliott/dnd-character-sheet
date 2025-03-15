@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { CharacterData } from '@/types/character';
-import { Map, Calendar, Users, Target, Plus } from 'lucide-react';
+import { Map, Plus } from 'lucide-react';
 import EditableTextField from '@/components/ui/editable-text-field';
 
 type CampaignNotesProps = {
@@ -18,10 +18,6 @@ type CampaignSection = 'landmarks' | 'events' | 'people' | 'objectives';
 
 export function CampaignNotes({ character, updateCharacter }: CampaignNotesProps) {
   const [editingState, setEditingState] = useState<EditingState>(null);
-
-  const handleItemClick = (section: CampaignSection, index: number) => {
-    setEditingState({ section, index });
-  };
 
   const handleBlur = () => {
     setEditingState(null);

@@ -12,20 +12,6 @@ type InventoryProps = {
 export function Inventory({ character, updateCharacter }: InventoryProps) {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
-  const handleItemClick = (index: number) => {
-    setEditingIndex(index);
-  };
-
-  const handleBlur = () => {
-    setEditingIndex(null);
-  };
-
-  const handleRemoveItem = (e: React.MouseEvent, index: number) => {
-    e.stopPropagation(); // Prevent event bubbling
-    const newInventory = character.inventory.filter((_, i) => i !== index);
-    updateCharacter('inventory', null, newInventory);
-  };
-
   return (
     <div className="rounded-lg border bg-gray-50 p-4">
       <h2 className="mb-2 flex items-center gap-2 border-b pb-2 text-lg font-bold">

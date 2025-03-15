@@ -12,20 +12,6 @@ type FeaturesProps = {
 export function Features({ character, updateCharacter }: FeaturesProps) {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
-  const handleFeatureClick = (index: number) => {
-    setEditingIndex(index);
-  };
-
-  const handleBlur = () => {
-    setEditingIndex(null);
-  };
-
-  const handleRemoveFeature = (e: React.MouseEvent, index: number) => {
-    e.stopPropagation(); // Prevent event bubbling
-    const newFeatures = character.features.filter((_, i) => i !== index);
-    updateCharacter('features', null, newFeatures);
-  };
-
   return (
     <div className="rounded-lg border bg-gray-50 p-4">
       <h2 className="mb-2 flex items-center gap-2 border-b pb-2 text-lg font-bold">
