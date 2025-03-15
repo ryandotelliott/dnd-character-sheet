@@ -218,12 +218,16 @@ export default function CharacterSheet() {
           campaign: {
             ...prevChar.campaign,
             ...(parsedCharacter.campaign || {}),
+            landmarks: Array.isArray(parsedCharacter.campaign?.landmarks) ? parsedCharacter.campaign.landmarks : [],
+            events: Array.isArray(parsedCharacter.campaign?.events) ? parsedCharacter.campaign.events : [],
+            people: Array.isArray(parsedCharacter.campaign?.people) ? parsedCharacter.campaign.people : [],
+            objectives: Array.isArray(parsedCharacter.campaign?.objectives) ? parsedCharacter.campaign.objectives : [],
           },
-          // Ensure arrays exist
-          inventory: parsedCharacter.inventory || [],
-          proficiencies: parsedCharacter.proficiencies || [],
-          features: parsedCharacter.features || [],
-          abilities: parsedCharacter.abilities || [],
+          // Ensure arrays exist and are actually arrays
+          inventory: Array.isArray(parsedCharacter.inventory) ? parsedCharacter.inventory : [],
+          proficiencies: Array.isArray(parsedCharacter.proficiencies) ? parsedCharacter.proficiencies : [],
+          features: Array.isArray(parsedCharacter.features) ? parsedCharacter.features : [],
+          abilities: Array.isArray(parsedCharacter.abilities) ? parsedCharacter.abilities : [],
         }));
       } catch (error) {
         console.error('Error parsing saved character:', error);
